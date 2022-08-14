@@ -5,42 +5,7 @@ with any problems, please [write to us](https://roxy-wi.org/contacts).
 
 Roxy-WI Prometheus exporter exposes next metrics:
 
-```# HELP python_gc_objects_collected_total Objects collected during gc
-# TYPE python_gc_objects_collected_total counter
-python_gc_objects_collected_total{generation="0"} 1180.0
-python_gc_objects_collected_total{generation="1"} 265.0
-python_gc_objects_collected_total{generation="2"} 0.0
-# HELP python_gc_objects_uncollectable_total Uncollectable object found during GC
-# TYPE python_gc_objects_uncollectable_total counter
-python_gc_objects_uncollectable_total{generation="0"} 0.0
-python_gc_objects_uncollectable_total{generation="1"} 0.0
-python_gc_objects_uncollectable_total{generation="2"} 0.0
-# HELP python_gc_collections_total Number of times this generation was collected
-# TYPE python_gc_collections_total counter
-python_gc_collections_total{generation="0"} 82.0
-python_gc_collections_total{generation="1"} 7.0
-python_gc_collections_total{generation="2"} 0.0
-# HELP python_info Python platform information
-# TYPE python_info gauge
-python_info{implementation="CPython",major="3",minor="6",patchlevel="8",version="3.6.8"} 1.0
-# HELP process_virtual_memory_bytes Virtual memory size in bytes.
-# TYPE process_virtual_memory_bytes gauge
-process_virtual_memory_bytes 3.64716032e+08
-# HELP process_resident_memory_bytes Resident memory size in bytes.
-# TYPE process_resident_memory_bytes gauge
-process_resident_memory_bytes 2.4092672e+07
-# HELP process_start_time_seconds Start time of the process since unix epoch in seconds.
-# TYPE process_start_time_seconds gauge
-process_start_time_seconds 1.66028387313e+09
-# HELP process_cpu_seconds_total Total user and system CPU time spent in seconds.
-# TYPE process_cpu_seconds_total counter
-process_cpu_seconds_total 1.74
-# HELP process_open_fds Number of open file descriptors.
-# TYPE process_open_fds gauge
-process_open_fds 7.0
-# HELP process_max_fds Maximum number of open file descriptors.
-# TYPE process_max_fds gauge
-process_max_fds 1024.0
+```
 # HELP roxy_wi_services_total How many services
 # TYPE roxy_wi_services_total gauge
 roxy_wi_services_total{name="HAProxy",service="haproxy"} 2.0
@@ -116,6 +81,17 @@ pip3 install -r requirements.txt
 chmod +x prometheus_exporter.py
 mv prometheus_exporter.py /var/www/haproxy-wi/app/tools/
 ```
+
+Add to Prometheus config:
+```angular2html
+  - job_name: roxy-wi
+    metrics_path: /
+    scrape_interval: 60s
+    static_configs:
+    - targets:
+      - localhost:9900
+```
+and reload it
 
 # Run:
 ```angular2html
