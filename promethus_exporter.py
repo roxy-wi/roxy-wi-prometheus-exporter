@@ -2,6 +2,8 @@
 import os
 import sys
 from functools import lru_cache
+import logging
+import signal
 
 import argparse
 from prometheus_client.core import GaugeMetricFamily, REGISTRY
@@ -13,6 +15,8 @@ metrics_app = make_wsgi_app()
 sys.path.append(os.path.join(sys.path[0], os.path.dirname(os.getcwd())))
 sys.path.append(os.path.join(sys.path[0], os.getcwd()))
 import sql
+
+logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
 
 
 @lru_cache(1)
@@ -45,6 +49,19 @@ def get_service_name() -> dict:
         services_name[service.slug] = service.service
 
     return services_name
+
+
+class GracefulKiller:
+    kill_now = False
+
+    def __init__(self):
+        signal.signal(signal.SIGINT, self.exit_gracefully)
+        signal.signal(signal.SIGTERM, self.exit_gracefully)
+
+    def exit_gracefully(self, signum, frame):
+        logging.info('Roxy-WI Prometheus has been stopped')
+        self.kill_now = True
+        sys.exit()
 
 
 class GeneralInfo(object):
@@ -313,4 +330,6 @@ def main():
 
 
 if __name__ == "__main__":
+    logging.info('Roxy-WI Prometheus exporter has been started')
+    killer = GracefulKiller()
     main()
