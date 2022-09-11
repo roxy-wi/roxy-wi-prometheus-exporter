@@ -10,8 +10,6 @@ from prometheus_client.core import GaugeMetricFamily, REGISTRY
 from prometheus_client import make_wsgi_app
 from wsgiref.simple_server import make_server
 
-metrics_app = make_wsgi_app()
-
 sys.path.append(os.path.join(sys.path[0], os.path.dirname(os.getcwd())))
 sys.path.append(os.path.join(sys.path[0], os.getcwd()))
 import sql
@@ -47,6 +45,7 @@ def get_service_name() -> dict:
 
     for service in services:
         services_name[service.slug] = service.service
+        services_name[service.service_id] = service.slug
 
     return services_name
 
@@ -143,10 +142,13 @@ class ServiceChecker(object):
                                                           "How many Checkers are enabled for service",
                                                           labels=['service', 'name'])
         checker_enabled_total = GaugeMetricFamily("roxy_wi_checker_enabled_total", "How many Checkers are enabled")
+        service_check_status = GaugeMetricFamily("roxy_wi_checker_service_status", "Service status",
+                                                 labels=['service', 'name', 'check_type', 'ip', 'hostname'])
 
         # Fetch raw status data from the cache
         servers = get_servers_from_db()
         services_name = get_service_name()
+        services_check_status = sql.select_checker_services_status()
 
         # Update Prometheus metrics
         for server in servers:
@@ -159,6 +161,16 @@ class ServiceChecker(object):
             if server[25] == 1:
                 checker_apache += 1
 
+            for status in services_check_status:
+                if str(status.server_id) == str(server[0]):
+                    service_check_status.add_metric(
+                        [services_name[status.service_id],
+                         services_name[services_name[status.service_id]],
+                         status.service_check,
+                         server[2], server[1]],
+                        status.status
+                    )
+
         checker_total = checker_haproxy + checker_nginx + checker_keepalived + checker_apache
 
         service_checker_enabled_total.add_metric(['haproxy', services_name['haproxy']], checker_haproxy)
@@ -169,6 +181,7 @@ class ServiceChecker(object):
 
         yield service_checker_enabled_total
         yield checker_enabled_total
+        yield service_check_status
 
         # Fetch alerts
         info_alerts = 0
@@ -294,6 +307,7 @@ class MetricsChecker(object):
 
 
 def expose_metrics(environ, start_fn):
+    metrics_app = make_wsgi_app()
     if environ['PATH_INFO'] == '/metrics':
         return metrics_app(environ, start_fn)
     start_fn('200 OK', [])
