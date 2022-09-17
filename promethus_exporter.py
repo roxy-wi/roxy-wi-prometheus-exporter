@@ -205,6 +205,8 @@ class ServiceChecker(object):
             alert_by_server[server[2]] = {'hostname': server[1], 'info': 0, 'warning': 0}
 
         for alert in alerts:
+            if alert[2] not in alert_by_server:
+                continue
             if alert[1] == 'info':
                 info_alerts += 1
                 alert_by_server[alert[2]]['info'] += 1
