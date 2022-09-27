@@ -86,7 +86,7 @@ roxy_wi_metrics_enabled_total 8.0
 
 # Installation
 
-1. Perform the follwing commands to install the exporter:
+1. Perform the following commands to install the exporter:
 
 ```angular2html
 git clone https://github.com/hap-wi/roxy-wi-prometheus-exporter.git
