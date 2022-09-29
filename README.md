@@ -105,7 +105,7 @@ mv prometheus_exporter.py /var/www/haproxy-wi/app/tools/
     - targets:
       - localhost:9900
 ```
-3. Reload Roxy-WI Prometheus exporter.
+3. Reload your Prometheus server.
 
 # Launching
 
@@ -114,6 +114,6 @@ cd /var/www/haproxy-wi/app
 tools/prometheus_exporter.py &
 ```
 
-# Dashboard
-There is [dashboard for Grafana](https://grafana.com/grafana/dashboards/16713)
+# Dashboard exemple
+Check out this free [Grafana dashboard exemple](https://grafana.com/grafana/dashboards/16713) as well.
 ![alt text](grafana_dashboard.png "Dashboard")
