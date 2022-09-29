@@ -114,6 +114,6 @@ cd /var/www/haproxy-wi/app
 tools/prometheus_exporter.py &
 ```
 
-# Dashboard exemple
-Check out this free [Grafana dashboard exemple](https://grafana.com/grafana/dashboards/16713) as well.
+# Dashboard example
+Check out this free [Grafana dashboard example](https://grafana.com/grafana/dashboards/16713) as well.
 ![alt text](grafana_dashboard.png "Dashboard")
