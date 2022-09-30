@@ -77,12 +77,12 @@ class GeneralInfo(object):
         servers = get_servers_from_db()
         users = get_users_from_db()
         services = get_services_from_db()
-        service_total = GaugeMetricFamily("roxy_wi_services_total", "How many services", labels=['service', 'name'])
-        enabled_server_total = GaugeMetricFamily("roxy_wi_enabled_server_total", "How many enabled servers")
-        virtual_server_total = GaugeMetricFamily("roxy_wi_virtual_server_total", "How many virtual servers")
-        user_total = GaugeMetricFamily("roxy_wi_user_total", "How many users")
-        user_by_role = GaugeMetricFamily("roxy_wi_user_by_role", "Users by roles", labels=['role'])
-        server_total = GaugeMetricFamily("roxy_wi_server_total", "How many servers")
+        service_total = GaugeMetricFamily("roxy_wi_services_total", "Total number of services", labels=['service', 'name'])
+        enabled_server_total = GaugeMetricFamily("roxy_wi_enabled_server_total", "Total number of servers marked as \"Enabled\" in the Servers-Servers section")
+        virtual_server_total = GaugeMetricFamily("roxy_wi_virtual_server_total", "Total number of virtual servers")
+        user_total = GaugeMetricFamily("roxy_wi_user_total", "Total number of users")
+        user_by_role = GaugeMetricFamily("roxy_wi_user_by_role", "Total number of users sorted by roles", labels=['role'])
+        server_total = GaugeMetricFamily("roxy_wi_server_total", "Total number of servers")
 
         for server in servers:
             if server[4] == 1:
@@ -139,10 +139,10 @@ class ServiceChecker(object):
         checker_apache = 0
 
         service_checker_enabled_total = GaugeMetricFamily("roxy_wi_service_checker_enabled_total",
-                                                          "How many Checkers are enabled for service",
+                                                          "Number of running Checker services for each HAProxy, NGINX, Keepalived, Apache service",
                                                           labels=['service', 'name'])
-        checker_enabled_total = GaugeMetricFamily("roxy_wi_checker_enabled_total", "How many Checkers are enabled")
-        service_check_status = GaugeMetricFamily("roxy_wi_checker_service_status", "Service status",
+        checker_enabled_total = GaugeMetricFamily("roxy_wi_checker_enabled_total", "Total number of running Checker services")
+        service_check_status = GaugeMetricFamily("roxy_wi_checker_service_status", "Statuses of Apache, NGINX, Keepalived, HAProxy services",
                                                  labels=['service', 'name', 'check_type', 'ip', 'hostname'])
 
         # Fetch raw status data from the cache
@@ -239,10 +239,10 @@ class AutoStartChecker(object):
         auto_start_apache = 0
 
         service_auto_start_enabled_total = GaugeMetricFamily("roxy_wi_service_auto_start_enabled_total",
-                                                             "How many Auto start are enabled for service",
+                                                             "Number of running Auto start services for each HAProxy, NGINX, Keepalived, Apache service",
                                                              labels=['service', 'name'])
         auto_start_enabled_total = GaugeMetricFamily("roxy_wi_auto_start_enabled_total",
-                                                     "How many Auto start are enabled")
+                                                     "Number of running Metrics services for each HAProxy, NGINX, Apache service")
 
         # Fetch raw status data from the cache
         servers = get_servers_from_db()
@@ -285,9 +285,9 @@ class MetricsChecker(object):
         servers = get_servers_from_db()
         services_name = get_service_name()
         service_metrics_enabled_total = GaugeMetricFamily("roxy_wi_service_metrics_enabled_total",
-                                                          "How many Metrics are enabled for service",
+                                                          "Number of running Metrics services for each HAProxy, NGINX, Apache service",
                                                           labels=['service', 'name'])
-        metrics_enabled_total = GaugeMetricFamily("roxy_wi_metrics_enabled_total", "How many Metrics are enabled")
+        metrics_enabled_total = GaugeMetricFamily("roxy_wi_metrics_enabled_total", "Total number of running Metrics services")
 
         for server in servers:
             if server[9] == 1:
