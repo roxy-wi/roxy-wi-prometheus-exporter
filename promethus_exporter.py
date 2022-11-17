@@ -12,7 +12,7 @@ from wsgiref.simple_server import make_server
 
 sys.path.append(os.path.join(sys.path[0], os.path.dirname(os.getcwd())))
 sys.path.append(os.path.join(sys.path[0], os.getcwd()))
-import sql
+import modules.db.sql as sql
 
 logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
 
