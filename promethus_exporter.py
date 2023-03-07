@@ -100,13 +100,13 @@ class GeneralInfo(object):
         user_guest = 0
 
         for user in users:
-            if user.role == 'superAdmin':
+            if user.role == '1':
                 user_superadmin += 1
-            if user.role == 'admin':
+            if user.role == '2':
                 user_admin += 1
-            if user.role == 'user':
+            if user.role == '3':
                 user_user += 1
-            if user.role == 'guest':
+            if user.role == '4':
                 user_guest += 1
 
         server_total.add_metric([''], len(servers))
