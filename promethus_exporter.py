@@ -12,7 +12,8 @@ from wsgiref.simple_server import make_server
 
 sys.path.append(os.path.join(sys.path[0], os.path.dirname(os.getcwd())))
 sys.path.append(os.path.join(sys.path[0], os.getcwd()))
-import modules.db.sql as sql
+
+import app.modules.db.sql as sql
 
 logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
 
@@ -91,6 +92,8 @@ class GeneralInfo(object):
                 enabled += 1
 
         for service in services:
+            if service.slug == 'cluster':
+                continue
             service_count = sql.select_count_services(service.slug)
             service_total.add_metric([service.slug, service.service], service_count)
 
