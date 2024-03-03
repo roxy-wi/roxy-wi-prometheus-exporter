@@ -14,20 +14,23 @@ sys.path.append(os.path.join(sys.path[0], os.path.dirname(os.getcwd())))
 sys.path.append(os.path.join(sys.path[0], os.getcwd()))
 
 import app.modules.db.sql as sql
+import app.modules.db.server as server_sql
+import app.modules.db.service as service_sql
+import app.modules.db.checker as checker_sql
 
 logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
 
 
 @lru_cache(1)
 def get_services_from_db():
-    services = sql.select_services()
+    services = service_sql.select_services()
 
     return services
 
 
 @lru_cache(1)
 def get_servers_from_db():
-    servers = sql.select_servers(full=1)
+    servers = server_sql.select_servers(full=1)
 
     return servers
 
@@ -94,7 +97,7 @@ class GeneralInfo(object):
         for service in services:
             if service.slug == 'cluster':
                 continue
-            service_count = sql.select_count_services(service.slug)
+            service_count = service_sql.select_count_services(service.slug)
             service_total.add_metric([service.slug, service.service], service_count)
 
         user_superadmin = 0
@@ -151,7 +154,7 @@ class ServiceChecker(object):
         # Fetch raw status data from the cache
         servers = get_servers_from_db()
         services_name = get_service_name()
-        services_check_status = sql.select_checker_services_status()
+        services_check_status = checker_sql.select_checker_services_status()
 
         # Update Prometheus metrics
         for server in servers:
