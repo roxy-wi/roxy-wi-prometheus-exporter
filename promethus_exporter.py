@@ -13,10 +13,11 @@ from wsgiref.simple_server import make_server
 sys.path.append(os.path.join(sys.path[0], os.path.dirname(os.getcwd())))
 sys.path.append(os.path.join(sys.path[0], os.getcwd()))
 
-import app.modules.db.sql as sql
+import app.modules.db.user as user_sql
 import app.modules.db.server as server_sql
 import app.modules.db.service as service_sql
 import app.modules.db.checker as checker_sql
+import app.modules.db.history as history_sql
 
 logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
 
@@ -37,7 +38,7 @@ def get_servers_from_db():
 
 @lru_cache(1)
 def get_users_from_db():
-    users = sql.select_users()
+    users = user_sql.select_users()
 
     return users
 
@@ -192,7 +193,7 @@ class ServiceChecker(object):
         # Fetch alerts
         info_alerts = 0
         warning_alerts = 0
-        alerts = sql.alerts_history('Checker', 1)
+        alerts = history_sql.alerts_history('Checker', 1)
         alert_by_server = {}
 
         service_checker_alert = GaugeMetricFamily(
