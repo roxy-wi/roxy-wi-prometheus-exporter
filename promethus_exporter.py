@@ -96,7 +96,7 @@ class GeneralInfo(object):
                 enabled += 1
 
         for service in services:
-            if service.slug == 'cluster':
+            if service.slug in ('cluster', 'udp'):
                 continue
             service_count = service_sql.select_count_services(service.slug)
             service_total.add_metric([service.slug, service.service], service_count)
